@@ -56,3 +56,8 @@ func AddMysqlInstance(db string) error {
 func RemoveMysqlInstance(db string) {
 	mysqlpool.Remove(db)
 }
+
+// HasMysqlInstance mysql句柄是否存在
+func HasMysqlInstance(db string) bool {
+	return mysqlpool.Has(db)
+}
