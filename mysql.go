@@ -59,5 +59,5 @@ func RemoveMysqlInstance(db string) {
 
 // HasMysqlInstance mysql句柄是否存在
 func HasMysqlInstance(db string) bool {
-	return mysqlpool.Has(db)
+	return mysqlpool != nil && mysqlpool.Has(db)
 }
