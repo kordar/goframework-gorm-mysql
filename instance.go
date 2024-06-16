@@ -15,7 +15,15 @@ type GormConnIns struct {
 
 func NewGormConnIns(name string, config *gorm.Config) *GormConnIns {
 	cfg := gocfg.GetSection(name)
+	return NewGormConnInsWithConfig(name, cfg, config)
+}
+
+func NewGormConnInsWithConfig(name string, cfg map[string]string, config *gorm.Config) *GormConnIns {
 	dsn := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s?%s", cfg["user"], cfg["password"], cfg["host"], cfg["port"], cfg["db"], "charset="+cfg["charset"]+"&parseTime=true")
+	return NewGormConnInsWithDsn(name, dsn, config)
+}
+
+func NewGormConnInsWithDsn(name string, dsn string, config *gorm.Config) *GormConnIns {
 	ins, err := gorm.Open(mysql.Open(dsn), config)
 	if err != nil {
 		log.Errorf("初始化mysql失败,dsn=%s,err=%v", dsn, err)

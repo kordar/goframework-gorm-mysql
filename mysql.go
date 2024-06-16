@@ -52,6 +52,18 @@ func AddMysqlInstance(db string) error {
 	return mysqlpool.Add(ins)
 }
 
+func AddMysqlInstanceWithCfg(db string, cfg map[string]string) error {
+	mysqlpool = godb.GetDbPool()
+	ins := NewGormConnInsWithConfig(db, cfg, gormConfig())
+	return mysqlpool.Add(ins)
+}
+
+func AddMysqlInstanceWithDsn(db string, dsn string) error {
+	mysqlpool = godb.GetDbPool()
+	ins := NewGormConnInsWithDsn(db, dsn, gormConfig())
+	return mysqlpool.Add(ins)
+}
+
 // RemoveMysqlInstance 移除mysql句柄
 func RemoveMysqlInstance(db string) {
 	mysqlpool.Remove(db)
