@@ -1,21 +1,26 @@
 package goframework_gorm_mysql
 
 import (
-	"github.com/kordar/gocfg"
 	"github.com/kordar/godb"
 	log "github.com/kordar/gologger"
 	"gorm.io/gorm"
 	"gorm.io/gorm/logger"
 )
 
-var mysqlpool *godb.DbConnPool
+var (
+	mysqlpool  *godb.DbConnPool
+	dbLogLevel = "info"
+)
+
+func SetDbLogLevel(level string) {
+	dbLogLevel = level
+}
 
 func GetMysqlDB(db string) *gorm.DB {
 	return mysqlpool.Handle(db).(*gorm.DB)
 }
 
 func gormConfig() *gorm.Config {
-	dbLogLevel := gocfg.GetSystemValue("gorm_log_level")
 	mysqlConfig := gorm.Config{}
 	if dbLogLevel == "error" {
 		mysqlConfig.Logger = logger.Default.LogMode(logger.Error)
@@ -30,10 +35,10 @@ func gormConfig() *gorm.Config {
 }
 
 // InitMysqlHandle 初始化mysql句柄
-func InitMysqlHandle(dbs ...string) {
+func InitMysqlHandle(dbs map[string]map[string]string) {
 	mysqlpool = godb.GetDbPool()
-	for _, s := range dbs {
-		ins := NewGormConnIns(s, gormConfig())
+	for db, cfg := range dbs {
+		ins := NewGormConnIns(db, cfg, gormConfig())
 		if ins == nil {
 			continue
 		}
@@ -46,15 +51,9 @@ func InitMysqlHandle(dbs ...string) {
 }
 
 // AddMysqlInstance 添加mysql句柄
-func AddMysqlInstance(db string) error {
+func AddMysqlInstance(db string, cfg map[string]string) error {
 	mysqlpool = godb.GetDbPool()
-	ins := NewGormConnIns(db, gormConfig())
-	return mysqlpool.Add(ins)
-}
-
-func AddMysqlInstanceWithCfg(db string, cfg map[string]string) error {
-	mysqlpool = godb.GetDbPool()
-	ins := NewGormConnInsWithConfig(db, cfg, gormConfig())
+	ins := NewGormConnIns(db, cfg, gormConfig())
 	return mysqlpool.Add(ins)
 }
 

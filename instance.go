@@ -2,7 +2,6 @@ package goframework_gorm_mysql
 
 import (
 	"fmt"
-	"github.com/kordar/gocfg"
 	log "github.com/kordar/gologger"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
@@ -13,12 +12,7 @@ type GormConnIns struct {
 	ins  *gorm.DB
 }
 
-func NewGormConnIns(name string, config *gorm.Config) *GormConnIns {
-	cfg := gocfg.GetSection(name)
-	return NewGormConnInsWithConfig(name, cfg, config)
-}
-
-func NewGormConnInsWithConfig(name string, cfg map[string]string, config *gorm.Config) *GormConnIns {
+func NewGormConnIns(name string, cfg map[string]string, config *gorm.Config) *GormConnIns {
 	dsn := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s?%s", cfg["user"], cfg["password"], cfg["host"], cfg["port"], cfg["db"], "charset="+cfg["charset"]+"&parseTime=true")
 	return NewGormConnInsWithDsn(name, dsn, config)
 }
