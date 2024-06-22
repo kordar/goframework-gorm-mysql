@@ -8,7 +8,7 @@ import (
 )
 
 var (
-	mysqlpool  = &godb.DbConnPool{}
+	mysqlpool  = godb.NewDbPool()
 	dbLogLevel = "info"
 )
 
