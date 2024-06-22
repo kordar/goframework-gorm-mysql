@@ -8,7 +8,7 @@ import (
 )
 
 var (
-	mysqlpool  *godb.DbConnPool
+	mysqlpool  = &godb.DbConnPool{}
 	dbLogLevel = "info"
 )
 
@@ -36,7 +36,6 @@ func gormConfig() *gorm.Config {
 
 // InitMysqlHandle 初始化mysql句柄
 func InitMysqlHandle(dbs map[string]map[string]string) {
-	mysqlpool = godb.GetDbPool()
 	for db, cfg := range dbs {
 		ins := NewGormConnIns(db, cfg, gormConfig())
 		if ins == nil {
@@ -52,13 +51,11 @@ func InitMysqlHandle(dbs map[string]map[string]string) {
 
 // AddMysqlInstance 添加mysql句柄
 func AddMysqlInstance(db string, cfg map[string]string) error {
-	mysqlpool = godb.GetDbPool()
 	ins := NewGormConnIns(db, cfg, gormConfig())
 	return mysqlpool.Add(ins)
 }
 
 func AddMysqlInstanceWithDsn(db string, dsn string) error {
-	mysqlpool = godb.GetDbPool()
 	ins := NewGormConnInsWithDsn(db, dsn, gormConfig())
 	return mysqlpool.Add(ins)
 }
