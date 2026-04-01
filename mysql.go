@@ -2,7 +2,7 @@ package goframework_gorm_mysql
 
 import (
 	"fmt"
-	log "github.com/kordar/gologger"
+	"log/slog"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
 )
@@ -20,7 +20,7 @@ func NewGormConnIns(name string, cfg map[string]string, config *gorm.Config) *Go
 func NewGormConnInsWithDsn(name string, dsn string, config *gorm.Config) *GormConnIns {
 	ins, err := gorm.Open(mysql.Open(dsn), config)
 	if err != nil {
-		log.Errorf("[godb-mysql] 初始化mysql失败,dsn=%s,err=%v", dsn, err)
+		slog.Error("[godb-mysql] 初始化mysql失败", "dsn", dsn, "err", err)
 		return nil
 	}
 	return &GormConnIns{name: name, ins: ins}

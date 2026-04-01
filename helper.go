@@ -1,10 +1,10 @@
 package goframework_gorm_mysql
 
 import (
+	"log/slog"
+
 	"github.com/kordar/godb"
-	log "github.com/kordar/gologger"
 	"gorm.io/gorm"
-	"gorm.io/gorm/logger"
 )
 
 var (
@@ -22,15 +22,7 @@ func GetMysqlDB(db string) *gorm.DB {
 
 func gormConfig() *gorm.Config {
 	mysqlConfig := gorm.Config{}
-	if dbLogLevel == "error" {
-		mysqlConfig.Logger = logger.Default.LogMode(logger.Error)
-	}
-	if dbLogLevel == "warn" {
-		mysqlConfig.Logger = logger.Default.LogMode(logger.Warn)
-	}
-	if dbLogLevel == "info" {
-		mysqlConfig.Logger = logger.Default.LogMode(logger.Info)
-	}
+	mysqlConfig.Logger = newSlogGormLogger(dbLogLevel)
 	return &mysqlConfig
 }
 
@@ -39,7 +31,7 @@ func AddMysqlInstances(dbs map[string]map[string]string) {
 	for db, cfg := range dbs {
 		err := AddMysqlInstance(db, cfg)
 		if err != nil {
-			log.Warnf("[godb-mysql] 初始化异常，err=%v", err)
+			slog.Warn("add mysql instance failed", "err", err)
 		}
 	}
 
